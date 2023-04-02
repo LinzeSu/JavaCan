@@ -1,0 +1,10 @@
+VERSION ""
+NS_ :
+BS_:
+BU_:
+BO_ 2147483649 AnimalMessage: 8 Vector__XXX
+ SG_ Dog : 0|12@1+ (1,0) [0|4095] "dog" Vector__XXX
+ SG_ Cat : 12|12@1+ (1,0) [0|4095] "cat" Vector__XXX
+ SG_ Bird : 24|12@0+ (1,0) [0|4095] "bird" Vector__XXX
+ SG_ Fish : 36|12@0+ (1,0) [0|4095] "fish" Vector__XXX
+ SG_ Other : 48|16@0+ (1,0) [0|4095] "other" Vector__XXX
