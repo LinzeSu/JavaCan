@@ -1,6 +1,5 @@
-package dbc;
+package com.linzesu.javacan.definitions;
 
-import utils.CanToJSONProcessor;
 import java.util.HashMap;
 import java.util.Map;
 

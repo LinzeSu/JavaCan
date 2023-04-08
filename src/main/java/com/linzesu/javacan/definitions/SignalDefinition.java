@@ -1,4 +1,4 @@
-package dbc;
+package com.linzesu.javacan.definitions;
 
 public class SignalDefinition {
     private long messageID;

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO" monitorInterval="30">
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p]  - %m%n"/>
+        </console>
+    </appenders>
+    <loggers>
+        <logger name="com.linzesu" level="INFO"/>
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+        </root>
+    </loggers>
+</configuration>
