@@ -1,4 +1,5 @@
 .class
 .idea
 target
-.maven
+archetype-resources
+META-INF

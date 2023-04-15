@@ -1,13 +1,9 @@
 import org.json.JSONObject;
 import org.junit.*;
 import com.linzesu.javacan.utils.DBCParser;
-
 import java.io.IOException;
-
-import static com.linzesu.javacan.utils.MessageParser.hexStringToByteArray;
 import static com.linzesu.javacan.utils.MessageParser.processCanMessageToJSON;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public class JavaCanTest {
@@ -25,7 +21,7 @@ public class JavaCanTest {
     public void getSignalAttributes(){
         // Notice that the message id has to be type long
         assertEquals(dbcParser.getMessageDefinitions()
-                .get(1l).getSignal("Dog").getEndianness(), false);
+                .get(1L).getSignal("Dog").getEndianness(), false);
     }
 
     @Test

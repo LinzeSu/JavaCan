@@ -7,10 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class MessageParser {
 
