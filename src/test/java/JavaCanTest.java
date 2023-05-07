@@ -2,6 +2,9 @@ import org.json.JSONObject;
 import org.junit.*;
 import com.linzesu.javacan.utils.DBCParser;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import static com.linzesu.javacan.utils.MessageParser.processCanMessageToJSON;
 import static org.junit.Assert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -40,7 +43,7 @@ public class JavaCanTest {
         expectedResult.put("Other",5);
 
         JSONObject CanMessageInJson = processCanMessageToJSON(dbcParser.getMessageDefinitions(),byteId, byteMessage,
-                isExtended);
+                isExtended, null);
         assertEquals(expectedResult, CanMessageInJson, true);
 
     }
@@ -60,7 +63,7 @@ public class JavaCanTest {
         expectedResult.put("Fish",4);
 
         JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId, byteMessage
-                , isExtended);
+                , isExtended, null);
         assertEquals(expectedResult, CanMessageInJson, true);
 
     }
@@ -81,7 +84,7 @@ public class JavaCanTest {
         expectedResult.put("Other",5);
 
         JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId, byteMessage
-                , isExtended);
+                , isExtended, null);
         assertEquals(expectedResult, CanMessageInJson, true);
 
     }
@@ -100,9 +103,30 @@ public class JavaCanTest {
         expectedResult.put("Bird",12292);
         expectedResult.put("Fish",5);
 
-        JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId, byteMessage, isExtended);
+        JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId,
+                byteMessage, isExtended, null);
         assertEquals(expectedResult, CanMessageInJson, true);
 
     }
 
+    @Test
+    public void testGetSpecificSignals(){
+
+        byte[] byteId = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04};
+        byte[] byteMessage = new byte[]{0x01, 0x00, 0x22, 0x00, 0x33, 0x00, 0x40, 0x05};
+        boolean isExtended = true;
+
+        // The message contained in the bytearray.
+        JSONObject expectedResult = new JSONObject();
+        expectedResult.put("Dog",4098);
+        expectedResult.put("Cat",8195);
+
+        ArrayList<String> signalName = new ArrayList<>();
+        signalName.add("Dog");
+        signalName.add("Cat");
+        JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId,
+                byteMessage, isExtended, signalName);
+        assertEquals(expectedResult, CanMessageInJson, true);
+
+    }
 }

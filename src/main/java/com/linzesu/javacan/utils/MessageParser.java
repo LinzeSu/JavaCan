@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class MessageParser {
@@ -17,7 +18,8 @@ public class MessageParser {
     public static JSONObject processCanMessageToJSON(LinkedHashMap<Long, MessageDefinition> messageDefinitions,
                                                      byte[] canID,
                                                      byte[] canMessage,
-                                                     boolean isExtended) {
+                                                     boolean isExtended,
+                                                     ArrayList<String> signalName) {
 
         long messageId;
         // Check if the canID is 8 bytes long to make ByteBuffer.getLong to work.
@@ -47,10 +49,19 @@ public class MessageParser {
             return null;
         }
         JSONObject json = new JSONObject();
-        for (SignalDefinition signal : message.getSignals()) {
-            double signalValue = getSignalValue(buffer, signal);
-            json.put(signal.getName(), signalValue);
+        if (signalName == null){
+            for (SignalDefinition signal : message.getSignals()) {
+                double signalValue = getSignalValue(buffer, signal);
+                json.put(signal.getName(), signalValue);
+            }
+        }else{
+            for (String name: signalName) {
+                SignalDefinition signal = message.getSignal(name);
+                double signalValue = getSignalValue(buffer, signal);
+                json.put(signal.getName(), signalValue);
+            }
         }
+
 
         return json;
     }
