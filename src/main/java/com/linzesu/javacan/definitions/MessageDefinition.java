@@ -26,4 +26,5 @@ public class MessageDefinition {
     public Iterable<SignalDefinition> getSignals() {
         return signals.values();
     }
+
 }

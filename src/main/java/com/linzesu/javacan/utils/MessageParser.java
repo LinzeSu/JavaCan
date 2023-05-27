@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MessageParser {
 
@@ -34,11 +35,11 @@ public class MessageParser {
             ByteBuffer idBuffer = ByteBuffer.wrap(canID);
             // Add 0x8000000 if using extended CAN
             messageId = idBuffer.getLong(0) + 2147483648L;
-            LOG.info("the message id is:" + messageId);
+            LOG.info("the message id is: " + messageId);
         }else{
             ByteBuffer idBuffer = ByteBuffer.wrap(canID);
             messageId = idBuffer.getLong(0);
-            LOG.info("the message id is:" + messageId);
+            LOG.info("the message id is: " + messageId);
         }
 
         ByteBuffer buffer = ByteBuffer.wrap(canMessage);
@@ -62,10 +63,56 @@ public class MessageParser {
             }
         }
 
-
         return json;
     }
 
+    public static byte[] processJSONToCanMessage(Map<Long, MessageDefinition> messageDefinitions, JSONObject json, long canId) {
+        MessageDefinition messageDefinition = messageDefinitions.get(canId);
+        if (messageDefinition == null) {
+            throw new IllegalArgumentException("Cannot find message definition for CAN ID: " + canId);
+        }
+
+        int dataLength = 8;
+        ByteBuffer buffer = ByteBuffer.allocate(dataLength);
+
+        for (String key : json.keySet()) {
+            SignalDefinition signalDefinition = messageDefinition.getSignal(key);
+            if (signalDefinition == null) {
+                throw new IllegalArgumentException("Cannot find signal definition for signal name: " + key);
+            }
+
+            double rawValue = json.getDouble(key);
+            long signalValue = (long) ((rawValue - signalDefinition.getOffset()) / signalDefinition.getFactor());
+            int startBit = signalDefinition.getBitStart();
+            int length = signalDefinition.getBitLength();
+            boolean isBigEndian = signalDefinition.getEndianness();
+
+            if (isBigEndian) {
+                int bitPos = startBit;
+                int bitValue;
+                for (int i = 0; i < length; i++) {
+                    int byteIndex = bitPos / 8;
+                    int bitIndex = bitPos % 8;
+                    bitValue = (int)(signalValue >> (length - i - 1)) & 1;
+                    buffer.put(byteIndex, (byte) (buffer.get(byteIndex) | (bitValue << bitIndex)));
+
+                    if (bitIndex == 0) {
+                        bitPos += 15;
+                    } else {
+                        bitPos--;
+                    }
+                }
+            } else {
+                for (int i = 0; i < length; i++) {
+                    int byteIndex = (startBit + i) / 8;
+                    int bitIndex = (startBit + i) % 8;
+                    buffer.put(byteIndex, (byte) (buffer.get(byteIndex) | (((signalValue >> i) & 1) << bitIndex)));
+                }
+            }
+        }
+
+        return buffer.array();
+    }
     public static double getSignalValue(ByteBuffer buffer, SignalDefinition signal) {
 
         boolean isBigEndian = signal.getEndianness();

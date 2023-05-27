@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.linzesu</groupId>
   <artifactId>javacan</artifactId>
-  <version>1.0</version>
+  <version>1.2</version>
   <name>JavaCan</name>
   <description>A Java library that works with CAN message.</description>
   <url>https://github.com/LinzeSu/JavaCan</url>

@@ -1,11 +1,11 @@
+import com.linzesu.javacan.utils.MessageParser;
 import org.json.JSONObject;
 import org.junit.*;
 import com.linzesu.javacan.utils.DBCParser;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import static com.linzesu.javacan.utils.MessageParser.processCanMessageToJSON;
+import static com.linzesu.javacan.utils.MessageParser.*;
 import static org.junit.Assert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
@@ -129,4 +129,63 @@ public class JavaCanTest {
         assertEquals(expectedResult, CanMessageInJson, true);
 
     }
+
+    @Test
+    public void reverseBigEndianMessage(){
+
+        byte[] byteId = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04};
+        byte[] byteMessage = new byte[]{0x01, 0x00, 0x22, 0x00, 0x33, 0x00, 0x40, 0x05};
+        boolean isExtended = false;
+
+        // The message contained in the bytearray.
+        JSONObject expectedResult = new JSONObject();
+        expectedResult.put("Dog",4098);
+        expectedResult.put("Cat",8195);
+        expectedResult.put("Bird",12292);
+        expectedResult.put("Fish",5);
+
+        JSONObject CanMessageInJson = processCanMessageToJSON(dbcParser.getMessageDefinitions(),byteId,
+                byteMessage, isExtended, null);
+
+        System.out.println(CanMessageInJson);
+
+        long canId = 4;
+        byte[] reversedMessage = MessageParser.processJSONToCanMessage(dbcParser.getMessageDefinitions(), CanMessageInJson, canId);
+
+        // You should see the original byteMessage printed in the console
+        System.out.println(bytesToHex(reversedMessage));
+
+        assertEquals(expectedResult, CanMessageInJson, true);
+        assertEquals(bytesToHex(byteMessage), bytesToHex(reversedMessage));
+
+    }
+
+    @Test
+    public void reverseLittleEndianMessage(){
+
+        byte[] byteId = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02};
+        byte[] byteMessage = new byte[]{0x10, 0x00, 0x21, 0x00, 0x32, 0x00, 0x43, 0x00};
+        boolean isExtended = true;
+
+        // The message contained in the bytearray.
+        JSONObject expectedResult = new JSONObject();
+        expectedResult.put("Dog",4097);
+        expectedResult.put("Cat",8194);
+        expectedResult.put("Bird",12291);
+        expectedResult.put("Fish",4);
+
+        JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId, byteMessage
+                , isExtended, null);
+
+        long canId = 2147483650L;
+        byte[] reversedMessage = MessageParser.processJSONToCanMessage(dbcParserCanExtended.getMessageDefinitions(), CanMessageInJson, canId);
+
+        // You should see the original byteMessage printed in the console
+        System.out.println(bytesToHex(reversedMessage));
+
+        assertEquals(expectedResult, CanMessageInJson, true);
+        assertEquals(bytesToHex(byteMessage), bytesToHex(reversedMessage));
+
+    }
+
 }
