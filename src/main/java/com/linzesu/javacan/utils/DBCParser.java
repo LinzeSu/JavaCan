@@ -9,12 +9,12 @@ import java.util.regex.Pattern;
 
 import com.linzesu.javacan.definitions.MessageDefinition;
 import com.linzesu.javacan.definitions.SignalDefinition;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DBCParser {
 
-    private static final Logger LOG = LogManager.getLogger(DBCParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DBCParser.class);
 
     private LinkedHashMap<Long, MessageDefinition> messageDefinitions;
 

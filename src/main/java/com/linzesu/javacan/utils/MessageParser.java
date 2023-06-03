@@ -2,8 +2,8 @@ package com.linzesu.javacan.utils;
 
 import com.linzesu.javacan.definitions.MessageDefinition;
 import com.linzesu.javacan.definitions.SignalDefinition;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class MessageParser {
 
-    private static final Logger LOG = LogManager.getLogger(MessageParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessageParser.class);
 
     public static JSONObject processCanMessageToJSON(LinkedHashMap<Long, MessageDefinition> messageDefinitions,
                                                      byte[] canID,
@@ -66,10 +66,33 @@ public class MessageParser {
         return json;
     }
 
-    public static byte[] processJSONToCanMessage(Map<Long, MessageDefinition> messageDefinitions, JSONObject json, long canId) {
-        MessageDefinition messageDefinition = messageDefinitions.get(canId);
+    public static byte[] processJSONToCanMessage(Map<Long, MessageDefinition> messageDefinitions,
+                                                 JSONObject json,
+                                                 byte[] canID,
+                                                 boolean isExtended) {
+        long messageId;
+        // Check if the canID is 8 bytes long to make ByteBuffer.getLong to work.
+        byte[] newArray = new byte[8];
+        if(canID.length < 8){
+            System.arraycopy(canID, 0, newArray, 8-canID.length, canID.length);
+            canID = newArray;
+        }
+
+        if (isExtended) {
+            LOG.info("Using extended CAN format");
+            ByteBuffer idBuffer = ByteBuffer.wrap(canID);
+            // Add 0x8000000 if using extended CAN
+            messageId = idBuffer.getLong(0) + 2147483648L;
+            LOG.info("the message id is: " + messageId);
+        }else{
+            ByteBuffer idBuffer = ByteBuffer.wrap(canID);
+            messageId = idBuffer.getLong(0);
+            LOG.info("the message id is: " + messageId);
+        }
+
+        MessageDefinition messageDefinition = messageDefinitions.get(messageId);
         if (messageDefinition == null) {
-            throw new IllegalArgumentException("Cannot find message definition for CAN ID: " + canId);
+            throw new IllegalArgumentException("Cannot find message definition for CAN ID: " + messageId);
         }
 
         int dataLength = 8;

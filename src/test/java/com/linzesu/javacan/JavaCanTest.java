@@ -1,10 +1,13 @@
+package com.linzesu.javacan;
+
 import com.linzesu.javacan.utils.MessageParser;
 import org.json.JSONObject;
 import org.junit.*;
 import com.linzesu.javacan.utils.DBCParser;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static com.linzesu.javacan.utils.MessageParser.*;
 import static org.junit.Assert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -13,6 +16,7 @@ public class JavaCanTest {
 
     private static DBCParser dbcParserCanExtended;
     private static DBCParser dbcParser;
+    private static final Logger LOG = LoggerFactory.getLogger(JavaCanTest.class);
 
     @BeforeClass
     public static void beforeClass() throws IOException {
@@ -147,13 +151,13 @@ public class JavaCanTest {
         JSONObject CanMessageInJson = processCanMessageToJSON(dbcParser.getMessageDefinitions(),byteId,
                 byteMessage, isExtended, null);
 
-        System.out.println(CanMessageInJson);
+        LOG.info(CanMessageInJson.toString());
 
-        long canId = 4;
-        byte[] reversedMessage = MessageParser.processJSONToCanMessage(dbcParser.getMessageDefinitions(), CanMessageInJson, canId);
+        byte[] reversedMessage = MessageParser.processJSONToCanMessage(dbcParser.getMessageDefinitions(),
+                CanMessageInJson, byteId, isExtended);
 
         // You should see the original byteMessage printed in the console
-        System.out.println(bytesToHex(reversedMessage));
+        LOG.info(bytesToHex(reversedMessage));
 
         assertEquals(expectedResult, CanMessageInJson, true);
         assertEquals(bytesToHex(byteMessage), bytesToHex(reversedMessage));
@@ -177,11 +181,11 @@ public class JavaCanTest {
         JSONObject CanMessageInJson = processCanMessageToJSON(dbcParserCanExtended.getMessageDefinitions(),byteId, byteMessage
                 , isExtended, null);
 
-        long canId = 2147483650L;
-        byte[] reversedMessage = MessageParser.processJSONToCanMessage(dbcParserCanExtended.getMessageDefinitions(), CanMessageInJson, canId);
+        byte[] reversedMessage = MessageParser.processJSONToCanMessage(dbcParserCanExtended.getMessageDefinitions(),
+                CanMessageInJson, byteId, isExtended);
 
         // You should see the original byteMessage printed in the console
-        System.out.println(bytesToHex(reversedMessage));
+        LOG.info("The original message in bytes: " + bytesToHex(reversedMessage));
 
         assertEquals(expectedResult, CanMessageInJson, true);
         assertEquals(bytesToHex(byteMessage), bytesToHex(reversedMessage));

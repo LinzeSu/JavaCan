@@ -17,12 +17,12 @@ Use following snippet to add JavaCan to your maven dependency:
 <dependency>
     <groupId>io.github.linzesu</groupId>
     <artifactId>javacan</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
 ## Usage
-The below code snippet shows the basic use. For more examples, see the [test file](https://github.com/LinzeSu/JavaCan/blob/master/src/test/java/JavaCanTest.java). You can find the dbc file used in the code [here](https://github.com/LinzeSu/JavaCan/blob/master/src/test/resources/example-can.dbc).
+The below code snippet shows the basic use. For more examples, see the [test file](https://github.com/LinzeSu/JavaCan/blob/master/src/test/java/com/linzesu/javacan/JavaCanTest.java). You can find the dbc file used in the code [here](https://github.com/LinzeSu/JavaCan/blob/master/src/test/resources/example-can.dbc).
 ### Convert byte array CAN message to JSON Object
 ```java
 import com.linzesu.javacan.utils.DBCParser;
