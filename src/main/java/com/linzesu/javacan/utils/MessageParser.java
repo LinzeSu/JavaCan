@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MessageParser {
@@ -20,7 +21,7 @@ public class MessageParser {
                                                      byte[] canID,
                                                      byte[] canMessage,
                                                      boolean isExtended,
-                                                     ArrayList<String> signalName) {
+                                                     List<String> signalName) {
 
         long messageId;
         // Check if the canID is 8 bytes long to make ByteBuffer.getLong to work.
