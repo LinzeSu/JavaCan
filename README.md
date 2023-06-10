@@ -17,7 +17,7 @@ Use following snippet to add JavaCan to your maven dependency:
 <dependency>
     <groupId>io.github.linzesu</groupId>
     <artifactId>javacan</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
