@@ -17,7 +17,7 @@ Use following snippet to add JavaCan to your maven dependency:
 <dependency>
     <groupId>io.github.linzesu</groupId>
     <artifactId>javacan</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
@@ -65,4 +65,4 @@ Here are functionalities that are planned to be added:
 - [x] Convert CAN message in JSON to byte array 
 - [ ] Add ARXML support 
 - [ ] Add DBC file check 
-- [ ] Add CANFD support
+- [x] Add CANFD support
